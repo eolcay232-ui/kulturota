@@ -182,15 +182,9 @@ export default function MapPage() {
     // Tema yönetimi hook'unu içeriye alıyoruz
     const { isDark, toggleTheme } = useTheme();
 
-    // Tema değiştiğinde Harita Katmanını Güncelleme (Stadia Alidade Smooth / Dark)
+    // Tema değiştiğinde sadece marker ikonlarını güncelliyoruz (Harita teması sabit kalacak)
     useEffect(() => {
         if (tileLayerRef.current) {
-            const newTileUrl = isDark 
-                ? 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png'
-                : 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
-            
-            tileLayerRef.current.setUrl(newTileUrl);
-            
             // Tüm markerların ikonlarını da temaya (ve tiplere) göre güncelle
             markersRef.current.forEach((marker: any) => {
                  const isLibrary = marker.options?.isLibrary; // Özel flag
@@ -209,13 +203,11 @@ export default function MapPage() {
         // Initialize map
         mapInstance.current = L.map(mapRef.current).setView(istanbulCoords, 11);
         
-        // İlk yüklemede mevcut temaya uygun katman URL'si seçilir
-        const initialTileUrl = isDark 
-                ? 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png'
-                : 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
+        // Sabit olarak CartoDB Voyager teması kullanılıyor
+        const initialTileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 
         tileLayerRef.current = L.tileLayer(initialTileUrl, {
-            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             maxZoom: 20
         }).addTo(mapInstance.current);
 

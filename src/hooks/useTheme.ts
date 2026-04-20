@@ -1,0 +1,43 @@
+import { useState, useEffect } from 'react';
+
+export function useTheme() {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        return savedTheme === 'dark';
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+    
+    // Uygulama içi state senkronizasyonu için event
+    window.dispatchEvent(new Event('theme-change'));
+  }, [isDark]);
+
+  // Diğer pencerelerde (veya sayfalarda) tema değiştiğinde
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDarkMode = document.documentElement.classList.contains('dark');
+      setIsDark(isDarkMode);
+    };
+    
+    window.addEventListener('theme-change', handleThemeChange);
+    return () => window.removeEventListener('theme-change', handleThemeChange);
+  }, []);
+
+  const toggleTheme = () => setIsDark(!isDark);
+
+  return { isDark, toggleTheme };
+}

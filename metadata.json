@@ -1,0 +1,5 @@
+{
+  "name": "İstanbul Müzeleri Haritası",
+  "description": "Leaflet.js ve OpenStreetMap kullanarak Google Sheets CSV verisindeki tüm müzeleri haritada gösteren uygulama.",
+  "requestFramePermissions": []
+}

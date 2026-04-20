@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+/* Map ve genel düzeltmeler */
+html, body, #root {
+  height: 100%;
+}
